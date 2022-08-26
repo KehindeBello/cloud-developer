@@ -25,7 +25,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
       }catch (err) {
         return res.status(400).send("Error in processing image");
       }
-    //return
+    //return error message if image_url query param was not supplied
     }else {
       return res.status(422).send('Image URL is required!');
     }
