@@ -13,5 +13,12 @@ export const sequelize = new Sequelize({
 
   dialect: 'postgres',
   storage: ':memory:',
+  pool: {
+    max: 100,
+    min: 0,
+    idle: 200000,
+    // @note https://github.com/sequelize/sequelize/issues/8133#issuecomment-359993057
+    acquire: 1000000
+  }
 });
 
