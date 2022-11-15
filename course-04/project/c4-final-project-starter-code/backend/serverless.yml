@@ -7,6 +7,8 @@ plugins:
   - serverless-webpack
   - serverless-iam-roles-per-function
   - serverless-plugin-tracing
+  - serverless-reqvalidator-plugin
+  - serverless-aws-documentation
 
 provider:
   name: aws
@@ -41,6 +43,20 @@ provider:
             - xray:PutTraceSegments
           Resource: "*"
 
+custom:
+  documentation:
+    api:
+      info:
+        version: '1.0.0'
+        title: Todo App API
+        description: API for todo-app built with serverless
+    models:
+      - name: CreateTodoRequest
+        contentType: "application/json"
+        schema: ${file(models/create-todo-model.json)}
+      - name: UpdateTodoRequest
+        contentType: "application/json"
+        schema: ${file(models/update-todo-model.json)}
 
 functions:
 
@@ -82,7 +98,7 @@ functions:
           cors: true
           authorizer: Auth
           request:
-            schemas:
+            schemas: 
               application/json: ${file(models/create-todo-model.json)}
           reqValidatorName: RequestBodyValidator
     iamRoleStatements:
@@ -107,7 +123,7 @@ functions:
           cors: true
           authorizer: Auth
           request:
-            schemas:
+            schemas: 
               application/json: ${file(models/update-todo-model.json)}
           reqValidatorName: RequestBodyValidator
     iamRoleStatements:
@@ -131,6 +147,7 @@ functions:
           path: todos/{todoId}
           cors: true
           authorizer: Auth
+          reqValidatorName: RequestBodyValidator
     iamRoleStatements:
       - Effect: "Allow"
         Action: 
@@ -152,6 +169,7 @@ functions:
           path: todos/{todoId}/attachment
           cors: true
           authorizer: Auth
+          reqValidatorName: RequestBodyValidator
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -242,7 +260,7 @@ resources:
     RequestBodyValidator:
       Type: AWS::ApiGateway::RequestValidator
       Properties:
-        Name: request-validator
+        Name: RequestBodyValidator
         RestApiId:
           Ref: ApiGatewayRestApi
         ValidateRequestBody: true
